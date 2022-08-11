@@ -13,7 +13,16 @@
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-
+	<!-- ==================================================================-->
+	<!-- DISTRIBUTION MANAGEMENT -->
+	<!-- ==================================================================-->
+	<distributionManagement>
+		<site>
+			<id>site-projet-Parking-System</id>
+			<url>scp://localhost/tmp</url>
+		</site>
+	</distributionManagement>
+	
 	<!-- ==================================================================-->
 	<!-- PROPRIETES -->
 	<!-- ==================================================================-->
@@ -23,12 +32,10 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 
-
 	<!-- ==================================================================-->
 	<!-- DEPENDANCES -->
 	<!-- ==================================================================-->
 	<dependencies>
-
 		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
@@ -90,8 +97,16 @@
 			<artifactId>maven-surefire-report-plugin</artifactId>
 			<version>3.0.0-M7</version>
 		</dependency>
-
-
+		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-site-plugin</artifactId>
+			<version>4.0.0-M3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.spotbugs</groupId>
+			<artifactId>spotbugs</artifactId>
+			<version>4.7.1</version>
+		</dependency>
 	</dependencies>
 
 	<!-- ==================================================================-->
@@ -125,7 +140,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
 			<!--  GESTION DU PLUGIN MAVEN SUREFIRE -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -192,7 +206,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
 			<!--  GESTION DU PLUGIN MAVEN FAILSAFE -->
 			<plugin>
 				<artifactId>maven-failsafe-plugin</artifactId>
@@ -210,11 +223,26 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!--  GENERATION DU SITE -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>4.0.0-M3</version>
+				<configuration>
+					<locales>fr</locales>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
-	<!--  GESTION DU PLUGIN MAVEN SUREFIRE-REPORT -->
+	<!--  GESTION DU PLUGIN SPOTBUGS -->
 	<reporting>
 		<plugins>
+			<plugin>
+				<groupId>com.github.spotbugs</groupId>
+				<artifactId>spotbugs-maven-plugin</artifactId>
+				<version>4.7.1.1</version>
+			</plugin>
+			<!--  GESTION DU PLUGIN MAVEN SUREFIRE-REPORT -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
