@@ -20,39 +20,26 @@ public class ParkingSpotDAOTest {
     DataBaseConfig dataBaseConfig;
 
     @Test
-    @DisplayName("test si une place de voiture est disponible")
+    @DisplayName("Test si une place de voiture est disponible")
     public void testGettingNextAvailableCarSlot() {
-
-	// GIVEN - ARRANGE
 	ParkingSpotDAO parkingSpotDAO = new ParkingSpotDAO();
-	// WHEN - ACT
 	int result = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
-	// THEN - ASSERT
 	assertThat(result).isBetween(1, 3);
     }
 
     @Test
-    @DisplayName("test si une place de moto est disponible")
+    @DisplayName("Test si une place de moto est disponible")
     public void testGettingNextAvailableBikeSlot() {
-	// GIVEN - ARRANGE
 	ParkingSpotDAO parkingSpotDAO = new ParkingSpotDAO();
-	// WHEN - ACT
 	int result = parkingSpotDAO.getNextAvailableSlot(ParkingType.BIKE);
-	// THEN - ASSERT
 	assertThat(result).isBetween(4, 5);
     }
 
     @Test
-    @DisplayName("test si un type null est passé alors on passe dans exception")
+    @DisplayName("Test quand un type null est passé on obtient -1")
     public void testWhenParameterOfGetNextAvailableSlotIsNull() {
-	// GIVEN - ARRANGE
 	ParkingSpotDAO parkingSpotDAO = new ParkingSpotDAO();
-	// when(parkingSpotDAO.getNextAvailableSlot(null)).thenThrow(new Exception());
-
-	// WHEN - ACT
 	int result = parkingSpotDAO.getNextAvailableSlot(null);
-
-	// THEN - ASSERT
 	assertThat(result).isEqualTo(-1);
     }
 
