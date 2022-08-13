@@ -34,7 +34,7 @@ public class ParkingDataBaseIT {
     private static DataBasePrepareService dataBasePrepareService;
 
     @Mock
-    private static InputReaderUtil inputReaderUtil; // ON SIMULE LA CLASSE InputReaderUtil
+    private static InputReaderUtil inputReaderUtil;
 
     @BeforeAll
     private static void setUp() throws Exception {
@@ -65,61 +65,31 @@ public class ParkingDataBaseIT {
     @Test
     @DisplayName("Test du process d'entrée d'un vehicule")
     public void testParkingACar() {
-	// TODO: check that a ticket is actually saved in DB and Parking table is
-	// updated with availability
-
-	// GIVEN - ARRANGE : Already done in @BeforeEach
-
-	// WHEN - ACT
 	ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 	Ticket ticketBeforeProcess = ticketDAO.getTicket("ABCDEF");
 	assertThat(ticketBeforeProcess).isNull();
 
 	parkingService.processIncomingVehicle();
+	Ticket ticketAfterProcess = ticketDAO.getTicket("ABCDEF");
 
-	Ticket ticket = ticketDAO.getTicket("ABCDEF");
-
-	// THEN - ASSERT
-	assertThat(ticket).isNotNull(); // checking that a ticket is actually saved in DB
-	assertThat(ticket.getVehicleRegNumber()).isEqualTo("ABCDEF");
-
-	assertThat(ticket.getParkingSpot().isAvailable()).isFalse(); // checking that Parking table is updated with
-								     // availability
+	assertThat(ticketAfterProcess).isNotNull();
+	assertThat(ticketAfterProcess.getInTime()).isNotNull();
+	assertThat(ticketAfterProcess.getVehicleRegNumber()).isEqualTo("ABCDEF");
+	assertThat(ticketAfterProcess.getParkingSpot().isAvailable()).isFalse();
     }
 
     @Test
     @DisplayName("Test du process de sortie d'un vehicule")
     public void testParkingLotExit() {
-
-	// TODO: check that the fare generated and out time are populated correctly in
-	// the database
-
-	// GIVEN - ARRANGE // LA VOITURE ENTRE DANS LE PARKING
 	ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 
-	// LA VOITURE ENTRE DANS LE PARKING
 	testParkingACar();
-
-	// WHEN - ACT // LA VOITURE SORT DU PARKING 1H APRES
 	parkingService.processExitingVehicle(new Date(System.currentTimeMillis() + 60 * 60 * 1000));
-
 	Ticket ticketAfterExitProcess = ticketDAO.getTicket("ABCDEF");
 
-	// ParkingSpot parkingSpotAfterProcess =
-	// ticketAfterExitProcess.getParkingSpot();
-	// boolean availabilityOfParkingLot = parkingSpotAfterProcess.isAvailable();
-
-	// THEN - ASSERT
-	assertThat(ticketAfterExitProcess).isNotNull(); // ON VERIFIE QUE LE TICKET APRES PROCESS N'EST PAS VIDE
-	assertThat(ticketAfterExitProcess.getPrice()).isNotNull(); // ON VERIFIE QUE LE PRIX DU TICKET N'EST PLUS NULL
-
-	// ON VERIFIE QUE LA PLACE DE PARKING EST BIEN VIDE (isAvailable = TRUE)
-	// assertThat(availabilityOfParkingLot).isTrue();
-
-	// ON PEUT VERIFIER QUE l'HEURE DE SORTIE EST BIEN PRESENTE DANS LA BDD
+	assertThat(ticketAfterExitProcess).isNotNull();
+	assertThat(ticketAfterExitProcess.getPrice()).isNotNull();
 	assertThat(ticketAfterExitProcess.getOutTime()).isNotNull();
-
-	// ON PEUT AUSSI VERIFIER QUE L'HEURE D'ENTREE EST AVANT L'HEURE DE SORTIE
 	assertThat(ticketAfterExitProcess.getInTime()).isBeforeOrEqualTo(ticketAfterExitProcess.getOutTime());
     }
 }
