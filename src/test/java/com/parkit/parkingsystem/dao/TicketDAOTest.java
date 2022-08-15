@@ -18,6 +18,9 @@ import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 
 public class TicketDAOTest {
+
+    /* INITIALISATION DU CONTEXTE DES TESTS */
+
     private static DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
     private static ParkingSpotDAO parkingSpotDAO;
     private static ParkingSpot parkingSpot;
@@ -29,7 +32,7 @@ public class TicketDAOTest {
 
     @BeforeAll
     private static void setUp() throws Exception {
-	parkingSpot = new ParkingSpot(2, ParkingType.BIKE, false);
+	parkingSpot = new ParkingSpot(4, ParkingType.BIKE, false);
 	parkingSpotDAO = new ParkingSpotDAO();
 	parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
 	ticketDAO = new TicketDAO();
@@ -48,9 +51,12 @@ public class TicketDAOTest {
     private static void tearDown() {
     }
 
+    /* TESTS CONCERANT LE COMPORTEMENT DE LA METHODE saveTicket */
+
     @Test
-    @DisplayName("Test de la sauvegarde d'un ticket en BDD")
+    @DisplayName("La methode sauvegarde un ticket en BDD")
     public void testSavingATicketInDataBase() {
+	// GIVEN
 	Date inTime = new Date();
 	Date outTime = new Date();
 	inTime.setTime(System.currentTimeMillis());
@@ -63,10 +69,11 @@ public class TicketDAOTest {
 	ticketToSave.setInTime(inTime);
 	ticketToSave.setOutTime(outTime);
 
+	// WHEN
 	ticketDAO.saveTicket(ticketToSave);
-
 	Ticket savedTicket = ticketDAO.getTicket("AT-444-ST");
 
+	// THEN
 	assertThat(savedTicket.getId()).isEqualTo(ticketToSave.getId());
 
 	assertThat(savedTicket.getParkingSpot()).isEqualTo(ticketToSave.getParkingSpot());
@@ -78,60 +85,72 @@ public class TicketDAOTest {
     }
 
     @Test
-    @DisplayName("Test de l'échec de la mise à jour d'un ticket")
-    public void testFaillingToUpdateATicketInDataBase() {
-	ticketToUpdate = null;
-	boolean result = ticketDAO.updateTicket(ticketToUpdate);
-	assertThat(result).isFalse();
-    }
-
-    @Test
-    @DisplayName("Test de l'échec de l'enregistrement dans la base de données")
-    public void testFailedToSAveTicket() {
+    @DisplayName("La methode lève une exception")
+    public void testFailedToSaveTicket() {
 	ticketToSave = null;
 	boolean result = ticketDAO.saveTicket(ticketToSave);
 	assertThat(result).isFalse();
     }
 
+    /* TESTS CONCERNANT LE COMPORTEMENT DE LA METHODE getTicket */
+
     @Test
-    @DisplayName("Test pour de la récupération d'un ticket avec une plaque nulle")
+    @DisplayName("La methode 'echoue' lors de la recuperation d'un ticket null")
     public void testFailedToGetTicket() {
 	Ticket gettedTicket = new Ticket();
 	gettedTicket = ticketDAO.getTicket(null);
 	assertThat(gettedTicket).isNull();
     }
 
+    /* TESTS CONCERNANT LE COMPORTEMENT DE LA METHODE updateTicket */
+
     @Test
-    @DisplayName("Test de la mise à jour d'un ticket en BDD")
+    @DisplayName("La methode met à jour un ticket en BDD")
     public void testUpdatingATicketInDataBase() {
+	// GIVEN
 	testSavingATicketInDataBase();
 	Date outTime = new Date();
 	outTime.setTime(System.currentTimeMillis() + (60 * 60 * 1000)); // AJOUT 1 HEURE
 
+	ticketToUpdate.setId(1);
 	ticketToUpdate.setPrice(10);
 	ticketToUpdate.setOutTime(outTime);
-	ticketToUpdate.setId(1);
 
-	ticketDAO.updateTicket(ticketToUpdate);
+	// WHEN
+	boolean result = ticketDAO.updateTicket(ticketToUpdate);
 	Ticket updatedTicket = ticketDAO.getTicket("AT-444-ST");
 
+	// THEN
+	assertThat(result).isTrue();
+	assertThat(updatedTicket.getId()).isEqualTo(ticketToUpdate.getId());
 	assertThat(updatedTicket.getPrice()).isEqualTo(ticketToUpdate.getPrice());
+
 	long offset = 900;
 	assertThat(updatedTicket.getOutTime().getTime()).isCloseTo(ticketToUpdate.getOutTime().getTime(),
 		within(offset));
-	assertThat(updatedTicket.getId()).isEqualTo(ticketToUpdate.getId());
+
     }
 
     @Test
-    @DisplayName("Test de comptage du nombre de ticket dans la BDD")
+    @DisplayName("La methode lève une exception lors de la mise à jour d'un ticket")
+    public void testFaillingToUpdateATicketInDataBase() {
+	ticketToUpdate = null;
+	boolean result = ticketDAO.updateTicket(ticketToUpdate);
+	assertThat(result).isFalse();
+    }
+
+    /* TESTS CONCERNANT LE COMPORTEMENT DE LA METHODE getCountForVehicleRegNumber */
+
+    @Test
+    @DisplayName("La methode compte le nombre de ticket dans la BDD")
     public void getCountForVehicleRegNumber() {
 	testSavingATicketInDataBase();
 	int result = ticketDAO.getCountForVehicleRegNumber("AT-444-ST");
-	assertThat(result).isGreaterThan(0);
+	assertThat(result).isGreaterThanOrEqualTo(1);
     }
 
     @Test
-    @DisplayName("Test pour une plaque d'immatriculation inconnue")
+    @DisplayName("La methode compte le nombre de ticket pour une plaque d'immatriculation inconnue")
     public void testGetForVehicleRegNumberWithUnknownRegistrationNumber() {
 	int result = ticketDAO.getCountForVehicleRegNumber(";");
 	assertThat(result).isEqualTo(0);

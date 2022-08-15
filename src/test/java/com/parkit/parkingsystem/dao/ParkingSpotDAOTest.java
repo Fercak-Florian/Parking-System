@@ -26,7 +26,7 @@ public class ParkingSpotDAOTest {
 	parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
     }
 
-    /* TESTS CONCERANT LE COMPORTEMENT DE LA METHODE getNextAvailableSlot */
+    /* TESTS CONCERNANT LE COMPORTEMENT DE LA METHODE getNextAvailableSlot */
 
     @Test
     @DisplayName("La methode renvoie une place de voiture disponible")
