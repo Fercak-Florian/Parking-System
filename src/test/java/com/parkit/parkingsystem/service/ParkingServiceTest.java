@@ -27,6 +27,8 @@ import com.parkit.parkingsystem.util.InputReaderUtil;
 @ExtendWith(MockitoExtension.class)
 public class ParkingServiceTest {
 
+    /* INITIALISATION DU CONTEXTE DES TESTS */
+
     private static ParkingService parkingService;
 
     @Mock
@@ -58,7 +60,51 @@ public class ParkingServiceTest {
 	}
     }
 
+    /* TESTS CONCERNANT LE COMPORTEMENT DE LA METHODE processIncomingVehicle */
+
+    @Test // A REVOIR...
+    @DisplayName("La methode gère l'entrée d'un utilisateur")
+    public void testProcessIncomingVehicle() {
+	when(inputReaderUtil.readSelection()).thenReturn(1);
+	when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
+
+	parkingService.processIncomingVehicle();
+	Ticket ticketAfterIncomingProcess = ticketDAO.getTicket("ABCDEF");
+
+	verify(ticketDAO, Mockito.times(1)).getCountForVehicleRegNumber(any(String.class));
+	assertThat(ticketAfterIncomingProcess.getPrice()).isEqualTo(0);
+    }
+
     @Test
+    @DisplayName("La methode gère l'entrée d'un utilisateur regulier")
+    public void testRecurringUserIncoming() {
+	when(inputReaderUtil.readSelection()).thenReturn(1);
+	when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
+	when(ticketDAO.getCountForVehicleRegNumber("ABCDEF")).thenReturn(1);
+
+	parkingService.processIncomingVehicle();
+	Ticket ticketAfterIncomingProcess = ticketDAO.getTicket("ABCDEF");
+
+	verify(ticketDAO, Mockito.times(1)).getCountForVehicleRegNumber(any(String.class));
+	assertThat(ticketAfterIncomingProcess.getOutTime()).isNull();
+    }
+
+    @Test
+    @DisplayName("La methode est testée avec un parkingSpot id = 0")
+    public void testWithAZeroIdParkingSpotInProcessIncomingVehicle() {
+	when(inputReaderUtil.readSelection()).thenReturn(1);
+	when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(0);
+
+	parkingService.processIncomingVehicle();
+	Ticket ticketAfterIncomingProcess = ticketDAO.getTicket("ABCDEF");
+
+	assertThat(ticketAfterIncomingProcess.getPrice()).isEqualTo(0);
+    }
+
+    /* TESTS CONCERNANT LE COMPORTEMENT DE LA METHODE processExitingVehicle */
+
+    @Test
+    @DisplayName("La methode gère la sortie d'un utilisateur")
     public void testOutTimeWhenProcessExitingVehicle() {
 	parkingService.processExitingVehicle(new Date());
 	Ticket ticketAfterExitingProcess = ticketDAO.getTicket("ABCDEF");
@@ -68,18 +114,19 @@ public class ParkingServiceTest {
     }
 
     @Test
-    @DisplayName("Test pour un utilisateur regulier lors de la sortie")
+    @DisplayName("La methode gère la sortie d'un utilisateur regulier")
     public void testRecurringUserExiting() {
 	when(ticketDAO.getCountForVehicleRegNumber("ABCDEF")).thenReturn(2);
 
 	parkingService.processExitingVehicle(new Date());
 	Ticket ticketAfterExitingProcess = ticketDAO.getTicket("ABCDEF");
 
+	verify(ticketDAO, Mockito.times(1)).getCountForVehicleRegNumber(any(String.class));
 	assertThat(ticketAfterExitingProcess.getPrice()).isLessThan(1.5);
     }
 
     @Test
-    @DisplayName("Test pour la récuperation d'un ticket null")
+    @DisplayName("La methode lève une exception lors la récuperation d'un ticket null")
     public void testProcessExitingVehicleWithANullTicket() {
 	when(ticketDAO.getTicket(anyString())).thenReturn(null);
 
@@ -90,7 +137,7 @@ public class ParkingServiceTest {
     }
 
     @Test
-    @DisplayName("Test la mise à jour d'un ticket null")
+    @DisplayName("La methode gère la mise à jour d'un ticket null")
     public void testProcessExitingVehicleWithUpdatingANullTicket() {
 	when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(false);
 
@@ -100,40 +147,4 @@ public class ParkingServiceTest {
 	assertThat(ticketAfterExitingProcess.getOutTime()).isNotNull();
     }
 
-    @Test
-    @DisplayName("On teste que l'heure d'entrée n'est pas nulle")
-    public void testInTimeWhenProcessIncomingVehicle() {
-	when(inputReaderUtil.readSelection()).thenReturn(1);
-	when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
-
-	parkingService.processIncomingVehicle();
-	Ticket ticketAfterIncomingProcess = ticketDAO.getTicket("ABCDEF");
-
-	assertThat(ticketAfterIncomingProcess.getInTime()).isNotNull();
-    }
-
-    @Test
-    @DisplayName("Test pour un utilisateur regulier lors de l'entrée")
-    public void testRecurringUserIncoming() {
-	when(inputReaderUtil.readSelection()).thenReturn(1);
-	when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
-	when(ticketDAO.getCountForVehicleRegNumber("ABCDEF")).thenReturn(1);
-
-	parkingService.processIncomingVehicle();
-	Ticket ticketAfterIncomingProcess = ticketDAO.getTicket("ABCDEF");
-
-	assertThat(ticketAfterIncomingProcess.getPrice()).isEqualTo(0);
-    }
-
-    @Test
-    @DisplayName("on teste avec un parkingSpot id = 0")
-    public void testWithAZeroIdParkingSpotInProcessIncomingVehicle() {
-	when(inputReaderUtil.readSelection()).thenReturn(1);
-	when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(0);
-
-	parkingService.processIncomingVehicle();
-	Ticket ticketAfterIncomingProcess = ticketDAO.getTicket("ABCDEF");
-
-	assertThat(ticketAfterIncomingProcess.getPrice()).isEqualTo(0);
-    }
 }
