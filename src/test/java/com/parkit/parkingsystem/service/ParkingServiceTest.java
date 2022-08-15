@@ -62,7 +62,7 @@ public class ParkingServiceTest {
 
     /* TESTS CONCERNANT LE COMPORTEMENT DE LA METHODE processIncomingVehicle */
 
-    @Test // A REVOIR...
+    @Test
     @DisplayName("La methode gère l'entrée d'un utilisateur")
     public void testProcessIncomingVehicle() {
 	when(inputReaderUtil.readSelection()).thenReturn(1);
