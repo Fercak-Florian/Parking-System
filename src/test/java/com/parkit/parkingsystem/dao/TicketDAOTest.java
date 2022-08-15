@@ -38,13 +38,13 @@ public class TicketDAOTest {
 	ticketDAO = new TicketDAO();
 	ticketDAO.dataBaseConfig = dataBaseTestConfig;
 	dataBasePrepareService = new DataBasePrepareService();
-	ticketToSave = new Ticket();
-	ticketToUpdate = new Ticket();
     }
 
     @BeforeEach
     private void setUpPerTest() throws Exception {
 	dataBasePrepareService.clearDataBaseEntries();
+	ticketToSave = new Ticket();
+	ticketToUpdate = new Ticket();
     }
 
     @AfterAll
