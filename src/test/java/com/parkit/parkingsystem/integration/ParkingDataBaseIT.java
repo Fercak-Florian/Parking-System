@@ -28,6 +28,8 @@ import com.parkit.parkingsystem.util.InputReaderUtil;
 @ExtendWith(MockitoExtension.class)
 public class ParkingDataBaseIT {
 
+    /* INITIALISATION DU CONTEXTE DES TESTS */
+
     private static DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
     private static ParkingSpotDAO parkingSpotDAO;
     private static TicketDAO ticketDAO;
@@ -65,13 +67,16 @@ public class ParkingDataBaseIT {
     @Test
     @DisplayName("Test du process d'entrée d'un vehicule")
     public void testParkingACar() {
+	// GIVEN
 	ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 	Ticket ticketBeforeProcess = ticketDAO.getTicket("ABCDEF");
 	assertThat(ticketBeforeProcess).isNull();
 
+	// WHEN
 	parkingService.processIncomingVehicle();
 	Ticket ticketAfterProcess = ticketDAO.getTicket("ABCDEF");
 
+	// THEN
 	assertThat(ticketAfterProcess).isNotNull();
 	assertThat(ticketAfterProcess.getInTime()).isNotNull();
 	assertThat(ticketAfterProcess.getVehicleRegNumber()).isEqualTo("ABCDEF");
@@ -81,12 +86,15 @@ public class ParkingDataBaseIT {
     @Test
     @DisplayName("Test du process de sortie d'un vehicule")
     public void testParkingLotExit() {
+	// GIVEN
 	ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-
 	testParkingACar();
+
+	// WHEN
 	parkingService.processExitingVehicle(new Date(System.currentTimeMillis() + 60 * 60 * 1000));
 	Ticket ticketAfterExitProcess = ticketDAO.getTicket("ABCDEF");
 
+	// THEN
 	assertThat(ticketAfterExitProcess).isNotNull();
 	assertThat(ticketAfterExitProcess.getPrice()).isNotNull();
 	assertThat(ticketAfterExitProcess.getOutTime()).isNotNull();
