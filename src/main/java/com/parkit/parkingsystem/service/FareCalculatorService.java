@@ -68,5 +68,4 @@ public class FareCalculatorService {
 	    throw new IllegalArgumentException("Unkown Parking Type");
 	}
     }
-
 }
