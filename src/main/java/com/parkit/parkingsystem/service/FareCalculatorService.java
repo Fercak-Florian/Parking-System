@@ -13,7 +13,6 @@ public class FareCalculatorService {
 	long inTime = ticket.getInTime().getTime();
 	long outTime = ticket.getOutTime().getTime();
 
-	// TODO: Some tests are failing here. Need to check if this logic is correct
 	long duration = outTime - inTime;
 
 	switch (ticket.getParkingSpot().getParkingType()) {
@@ -21,11 +20,6 @@ public class FareCalculatorService {
 	    if (duration <= 1800000) {
 		ticket.setPrice(0);
 	    } else if (duration > 1800000) {
-		/*
-		 * double price = ((double) duration / 3600000) * Fare.CAR_RATE_PER_HOUR; double
-		 * roundedPrice = Math.round(price * 100.0) / 100.0;
-		 * ticket.setPrice(roundedPrice);
-		 */
 		ticket.setPrice(((double) duration / 3600000) * Fare.CAR_RATE_PER_HOUR);
 	    }
 	    break;
@@ -34,11 +28,6 @@ public class FareCalculatorService {
 	    if (duration <= 1800000) {
 		ticket.setPrice(0);
 	    } else if (duration > 1800000) {
-		/*
-		 * double price = ((double) duration / 3600000) * Fare.BIKE_RATE_PER_HOUR;
-		 * double roundedPrice = Math.round(price * 10000) / 10000;
-		 * ticket.setPrice(roundedPrice);
-		 */
 		ticket.setPrice(((double) duration / 3600000) * Fare.BIKE_RATE_PER_HOUR);
 	    }
 	    break;
@@ -56,7 +45,6 @@ public class FareCalculatorService {
 	long inTime = ticket.getInTime().getTime();
 	long outTime = ticket.getOutTime().getTime();
 
-	// TODO: Some tests are failing here. Need to check if this logic is correct
 	long duration = outTime - inTime;
 
 	switch (ticket.getParkingSpot().getParkingType()) {
@@ -64,12 +52,6 @@ public class FareCalculatorService {
 	    if (duration <= 1800000) {
 		ticket.setPrice(0);
 	    } else if (duration > 1800000) {
-		/*
-		 * double price = ((double) duration / 3600000) * Fare.CAR_RATE_PER_HOUR; double
-		 * roundedPrice = Math.round(price * 100.0) / 100.0;
-		 * ticket.setPrice(roundedPrice);
-		 */
-
 		ticket.setPrice(((double) duration / 3600000) * Fare.CAR_RATE_PER_HOUR_DISCOUNT);
 	    }
 	    break;
@@ -78,11 +60,6 @@ public class FareCalculatorService {
 	    if (duration <= 1800000) {
 		ticket.setPrice(0);
 	    } else if (duration > 1800000) {
-		/*
-		 * double price = ((double) duration / 3600000) * Fare.BIKE_RATE_PER_HOUR;
-		 * double roundedPrice = Math.round(price * 10000) / 10000;
-		 * ticket.setPrice(roundedPrice);
-		 */
 		ticket.setPrice(((double) duration / 3600000) * Fare.BIKE_RATE_PER_HOUR_DISCOUNT);
 	    }
 	    break;
