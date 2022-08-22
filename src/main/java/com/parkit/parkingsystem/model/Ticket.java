@@ -19,11 +19,15 @@ public class Ticket {
     }
 
     public ParkingSpot getParkingSpot() {
-	return parkingSpot;
+	ParkingSpot parkingSpotClone = new ParkingSpot(parkingSpot.getId(), parkingSpot.getParkingType(),
+		parkingSpot.isAvailable());
+	return parkingSpotClone;
     }
 
     public void setParkingSpot(ParkingSpot parkingSpot) {
-	this.parkingSpot = parkingSpot;
+	ParkingSpot parkingSpotClone = new ParkingSpot(parkingSpot.getId(), parkingSpot.getParkingType(),
+		parkingSpot.isAvailable());
+	this.parkingSpot = parkingSpotClone;
     }
 
     public String getVehicleRegNumber() {
