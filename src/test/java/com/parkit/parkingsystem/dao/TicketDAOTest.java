@@ -77,7 +77,7 @@ public class TicketDAOTest {
 	assertThat(savedTicket.getId()).isEqualTo(ticketToSave.getId());
 
 	assertThat(savedTicket.getParkingSpot()).isEqualTo(ticketToSave.getParkingSpot());
-	assertThat(savedTicket.getPrice()).isEqualTo(savedTicket.getPrice());
+	assertThat(savedTicket.getPrice()).isEqualTo(ticketToSave.getPrice());
 
 	long offset = 900;
 	assertThat(savedTicket.getInTime().getTime()).isCloseTo(ticketToSave.getInTime().getTime(), within(offset));
