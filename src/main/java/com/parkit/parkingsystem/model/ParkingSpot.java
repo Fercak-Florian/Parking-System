@@ -15,14 +15,14 @@ public class ParkingSpot implements Cloneable {
 
     /* IMPLEMENTATION DE LA METHODE CLONE */
     @Override
-    public Object clone() {
-	Object o = null;
+    public ParkingSpot clone() {
+	ParkingSpot parkingSpot = null;
 	try {
-	    o = super.clone();
+	    parkingSpot = (ParkingSpot) super.clone();
 	} catch (CloneNotSupportedException cnse) {
 	    cnse.printStackTrace(System.err);
 	}
-	return o;
+	return parkingSpot;
     }
 
     public int getId() {
