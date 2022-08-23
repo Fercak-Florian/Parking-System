@@ -18,16 +18,25 @@ public class Ticket {
 	this.id = id;
     }
 
+    /*
+     * public ParkingSpot getParkingSpot() { ParkingSpot parkingSpotClone = new
+     * ParkingSpot(parkingSpot.getId(), parkingSpot.getParkingType(),
+     * parkingSpot.isAvailable()); return parkingSpotClone; }
+     */
+
+    /*
+     * public void setParkingSpot(ParkingSpot parkingSpot) { ParkingSpot
+     * parkingSpotClone = new ParkingSpot(parkingSpot.getId(),
+     * parkingSpot.getParkingType(), parkingSpot.isAvailable()); this.parkingSpot =
+     * parkingSpotClone; }
+     */
+
     public ParkingSpot getParkingSpot() {
-	ParkingSpot parkingSpotClone = new ParkingSpot(parkingSpot.getId(), parkingSpot.getParkingType(),
-		parkingSpot.isAvailable());
-	return parkingSpotClone;
+	return (ParkingSpot) parkingSpot.clone();
     }
 
     public void setParkingSpot(ParkingSpot parkingSpot) {
-	ParkingSpot parkingSpotClone = new ParkingSpot(parkingSpot.getId(), parkingSpot.getParkingType(),
-		parkingSpot.isAvailable());
-	this.parkingSpot = parkingSpotClone;
+	this.parkingSpot = (ParkingSpot) parkingSpot.clone();
     }
 
     public String getVehicleRegNumber() {
