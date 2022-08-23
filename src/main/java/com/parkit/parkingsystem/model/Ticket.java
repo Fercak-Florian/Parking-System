@@ -2,13 +2,24 @@ package com.parkit.parkingsystem.model;
 
 import java.util.Date;
 
-public class Ticket {
+public class Ticket implements Cloneable {
     private int id;
     private ParkingSpot parkingSpot;
     private String vehicleRegNumber;
     private double price;
     private Date inTime;
     private Date outTime;
+
+    @Override
+    public Ticket clone() {
+	Ticket ticket = null;
+	try {
+	    ticket = (Ticket) super.clone();
+	} catch (CloneNotSupportedException cnse) {
+	    cnse.printStackTrace(System.err);
+	}
+	return ticket;
+    }
 
     public int getId() {
 	return id;
